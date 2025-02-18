@@ -10,7 +10,8 @@
     </parent>
     <groupId>com.msc</groupId>
     <artifactId>msc-ms-authentication</artifactId>
-    <version>0.0.1.5-BETA</version>
+    <version>0.0.1.6-BETA
+    </version>
     <name>msc-ms-authentication</name>
     <description>Demo project for Spring Boot</description>
     <properties>
