@@ -3,6 +3,7 @@ package com.msc.ms.authentification.controllers;
 import base.BaseTestConfiguration;
 import com.msc.ms.authentification.authentication.model.request.LoginRequestDTO;
 import com.msc.ms.authentification.configuration.SecurityConfig;
+import com.msc.ms.authentification.log.model.LogPassHistoryRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -107,5 +108,16 @@ public class AuthenticationControllerTest extends BaseTestConfiguration {
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)).andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$.code").value("A005"));
+    }
+
+    @Test
+    void testRegistryPasswordLogHistory() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        final var request = LogPassHistoryRequest.builder().idUser(5).password("i/W0SDWGYwMpZ/wrQKAEVw==").build();
+        mockMvc.perform(post("/api/password/log")
+                        .header("msc-security-key-header","GTxNoj5MG3xmm39kRC1hkg==")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().is2xxSuccessful());
     }
 }
