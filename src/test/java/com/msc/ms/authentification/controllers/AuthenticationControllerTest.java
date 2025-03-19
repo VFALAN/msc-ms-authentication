@@ -3,8 +3,8 @@ package com.msc.ms.authentification.controllers;
 import base.BaseTestConfiguration;
 import com.msc.ms.authentification.authentication.model.request.LoginRequestDTO;
 import com.msc.ms.authentification.configuration.SecurityConfig;
+import com.msc.ms.authentification.log.model.LogPassHistoryRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +12,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -112,5 +108,16 @@ public class AuthenticationControllerTest extends BaseTestConfiguration {
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)).andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$.code").value("A005"));
+    }
+
+    @Test
+    void testRegistryPasswordLogHistory() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        final var request = LogPassHistoryRequest.builder().idUser(5).password("i/W0SDWGYwMpZ/wrQKAEVw==").build();
+        mockMvc.perform(post("/api/password/log")
+                        .header("msc-security-key-header","GTxNoj5MG3xmm39kRC1hkg==")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().is2xxSuccessful());
     }
 }

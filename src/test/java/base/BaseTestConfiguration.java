@@ -43,21 +43,12 @@ public class BaseTestConfiguration {
         final var mySqlPort = enviroment.getServicePort("db", DEFAULT_PORT_MYSQL) != null ? enviroment.getServicePort("db", DEFAULT_PORT_MYSQL).toString() : "No Port Found";
         final var jdbcUrl = "jdbc:mysql://" + mySqlHost + ":" + mySqlPort + "/msc_development";
         log.info("@Configuration -> mySQL connection : mysqlHost: {}, port: {},username: {}, password: {} jdbcUrl: {}", mySqlHost, mySqlPort, mySqlUsername, mySqlPassword, jdbcUrl);
-        final var rabbitHost = enviroment.getServiceHost("rabbitmq", DEFAULT_PORT_RABBIT_MQ_CLIENT);
-        final var rabbitMappedPort = enviroment.getServicePort("rabbitmq", DEFAULT_PORT_RABBIT_MQ_CLIENT);
-        final var rabbitUsername = "VIFA-951002";
-        final var rabbitPassword = "VIFA-951002-PASS";
-        log.info("@configuration -> rabbit connection mySqlHost: {} mySqlPort: {}, username: {}, password:{} .", rabbitHost, rabbitMappedPort, rabbitUsername, rabbitPassword);
         final var lokiPort = enviroment.getServicePort("loki", DEFAULT_LOKI_PORT);
         final var lokiHost = enviroment.getServiceHost("loki", DEFAULT_LOKI_PORT);
         final var lokiUrl = "http://" + lokiHost + ":" + lokiPort + "/loki/api/v1/push";
         log.info("@configuration -> loki connnection lokiUrl :{}", lokiUrl);
         //spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
         registry.add("loki.url", () -> lokiUrl);
-        registry.add("spring.rabbitmq.username", () -> rabbitUsername);
-        registry.add("spring.rabbitmq.password", () -> rabbitPassword);
-        registry.add("spring.rabbitmq.host", () -> rabbitHost);
-        registry.add("spring.rabbitmq.port", () -> rabbitMappedPort);
         registry.add("spring.datasource.url", () -> jdbcUrl);
         registry.add("spring.datasource.password", () -> mySqlPassword);
         registry.add("spring.datasource.username", () -> mySqlUsername);

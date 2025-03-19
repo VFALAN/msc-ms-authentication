@@ -1,6 +1,7 @@
 package com.msc.ms.authentification.user;
 
 import com.msc.ms.authentification.authentication.error.UsernameOrEmailInvalidException;
+import com.msc.ms.authentification.common.error.DataBaseObjectNotFound;
 import com.msc.ms.authentification.log.ILogPassRepository;
 import com.msc.ms.authentification.log.model.LogPassEntity;
 import com.msc.ms.authentification.user.model.UserDetailDTO;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Slf4j
@@ -63,6 +65,15 @@ public class UserService {
     public Boolean validIsEmailACurrentUser(String pEmail) {
         final var mOptionUserEntity = iUserRepository.findByEmail(pEmail);
         return mOptionUserEntity.isPresent();
+    }
+
+    public UserEntity findEntityById(Integer pUserId) throws DataBaseObjectNotFound {
+        final var mOptionalUserEntity = iUserRepository.findById(pUserId);
+        if (mOptionalUserEntity.isPresent()) {
+            return mOptionalUserEntity.get();
+        } else {
+            throw new DataBaseObjectNotFound("UserId", "UserNot Found by id", pUserId.toString());
+        }
     }
 
     protected LogPassEntity getPassword(UserEntity userEntity) {

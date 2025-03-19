@@ -28,12 +28,15 @@ public class AuthenticationService {
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
     private final PasswordEncoder passwordEncoder;
 
+
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) throws MscAuthenticationException {
         if (validUser(loginRequestDTO.getUsername()) && validPassword(loginRequestDTO.getUsername(), loginRequestDTO.getPassword())) {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDTO.getUsername(), loginRequestDTO.getPassword()));
             UserDetails user = userService.buildUserDetails(loginRequestDTO.getUsername());
+            final var mUserEntity = userService.findUser(user.getUsername());
             final var hash = new HashMap<String, String>();
             hash.put("DashBoard", "General");
+            hash.put("profile", mUserEntity.getProfile().getName());
             final var accessToken = jwtService.getToken(hash, user);
             return LoginResponseDTO.builder().accessToken(accessToken).build();
         } else return null;
