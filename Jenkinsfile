@@ -17,12 +17,28 @@ APP_VERSION = ''
                 bat 'mvn clean package' // Adjust command for your build tool (e.g., Gradle: ./gradlew clean build)
             }
         }
+        stage('Get Version') {
+        steps {
+        script {
+        def appVersion = powershell(script: '''
+        $content = Get-Content application.properties | Select-String -Pattern "msc.app.version="
+        if($content){
+        $content -split "=" | Select-Object -Last 1 | Out-String -Trim
+        }else{
+        ""
+        }
+        ''',returnStdout: true).trim()
+        echo "app Version: ${appVersion}"
+        env.APP_VERSION = appVersion
+        }
+        }
+        }
 
         stage('Build Docker Image') {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com','dcoker-credentials'){
-                        def dockerImageBuild = docker.build("vifa951002/msc-ms-authentication")
+                        def dockerImageBuild = docker.build("vifa951002/msc-ms-authentication:${APP_VERSION}")
                         dockerImageBuild.push()
                     }
                 }
