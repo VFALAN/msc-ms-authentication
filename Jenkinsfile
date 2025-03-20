@@ -20,17 +20,9 @@ APP_VERSION = ''
         stage('Get Version') {
         steps {
         script {
-        def appVersion = powershell(script: '''
-        $content = Get-Content application.properties | Select-String -Pattern "msc.app.version="
-        if($content){
-        $content -split "=" | Select-Object -Last 1 | Out-String -Trim
-        }else{
-        ""
-        }
-        ''',returnStdout: true).trim()
-        echo "app Version: ${appVersion}"
-        env.APP_VERSION = appVersion
-        }
+       def projectVersion = powershell('mvn help:evaluate -Dexpression=version -q -DforceStdout', returnStdout: true).trim()
+       APP_VERSION = projectVersion
+       bat 'echo ${projectVersion}'
         }
         }
 
